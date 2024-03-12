@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flappy Ball</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #121212; color: #ffffff; font-family: Arial, sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+
+    <div id="game-container" style="background-color: #333; padding: 20px; border: 2px solid #444; text-align: center; position: relative;">
+        <button id="fullscreen-button" onclick="toggleFullscreen()" style="background-color: #333; color: #fff; padding: 10px 20px; border: none; cursor: pointer; transition: background-color 0.3s;">
+            Full Screen
+        </button>
+        <iframe id="game-iframe" src="https://wanted5games.com/games/html5/demon-killer-en-s-iga-cloud/index.html" width="800" height="600" frameborder="0"></iframe>
+    </div>
+
+    <div id="top-left" style="position: absolute; top: 0; left: 0; color: #ffffff;">
+        <p>qtkn.github.io</p>
+    </div>
+    <div id="top-right" style="position: absolute; top: 0; right: 0; color: #ffffff;">
+        <p>Demon Killer</p>
+    </div>
+
+    <script>
+        function toggleFullscreen() {
+            const gameContainer = document.getElementById("game-container");
+            const gameIframe = document.getElementById("game-iframe");
+            
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+                gameIframe.style.width = "800px";
+                gameIframe.style.height = "600px";
+            } else {
+                gameContainer.requestFullscreen();
+                gameIframe.style.width = "100%";
+                gameIframe.style.height = "100%";
+            }
+        }
+
+        const fullscreenButton = document.getElementById("fullscreen-button");
+        let isAnimating = false;
+
+        fullscreenButton.addEventListener("click", () => {
+            if (!isAnimating) {
+                isAnimating = true;
+                fullscreenButton.style.backgroundColor = "#555";
+                setTimeout(() => {
+                    fullscreenButton.style.backgroundColor = "#333";
+                    isAnimating = false;
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

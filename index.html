@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="styles/indexstyle.css" rel="stylesheet" />
+      </head>
+    <title>Welcome</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Website!</h1>
+    </header>
+
+    <main>
+        <div class="welcome-options">
+            <div class="option" onclick="optionSelected('online-tools.html')">Online Tools</div>
+            <div class="option" onclick="optionSelected('qtkn.html')">My Bio Page</div>
+        </div>
+    
+
+    <script>
+        function optionSelected(destination) {
+            window.location.href = destination;
+        }
+    </script>
+</body>
+</html>

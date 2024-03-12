@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PX Key System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #202020;
+            color: #ffffff;
+        }
+        h1 {
+            color: #00bcd4;
+        }
+        #output {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00bcd4;
+            margin-bottom: 20px;
+        }
+        #generateButton, #copyButton {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #00bcd4;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Key Generator</h1>
+    <div id="output"></div>
+    <button id="generateButton" onclick="generateOrRetrieveKey()">Generate Key</button>
+    <button id="copyButton" onclick="copyToClipboard()">Copy to Clipboard</button>
+
+    <script>
+        const strings = [
+            "jzhuSgoELvtG", "sPZNzdpmeITD", "pznUUxJuloEu", "smKwkGOVaeUc",
+            "sPmaPXtCrtXM", "UOwQQUzgFinY", "ptrXTJLvCvzE", "tsqJWriOXbFb",
+            "ijOSqPWwOlve", "xLbBuCOUnrjm", "nIIjgTkwzVro", "BfUETowlXlpT",
+            "YwdgzDnBHGzm", "BLqmMeAAduGR", "oPvBSkGodEli", "REKJuKuHMrjE",
+            "tAfvzZnNWNij", "tMbTYdGPJEtm", "jmgnFWyLzpiy", "bMFWdxIOfYTi",
+            "BRNxdtTOXmri", "gcPPFElQoKLq", "ERuLTLUeoaaS", "IJTlsZVnYrRB",
+            "OBTVBIsFSoLu", "OOOlWWYPQzXo", "WKSycyDjVZwU", "UsuqvdRAyXIt",
+            "qOHJLUrAMfCz", "TIvuFAYILimL", "FwQTsXbKxxzF", "UMUwbJjFWhzv",
+            "VrhBJlKefFBV", "rweXYfDgWdWj", "jFFpKMLpyMxH", "llpAdbZoCiTM",
+            "zqVSlOutDytL", "BmsvekagJXrP", "WgLfOHfeiHSH", "qtmuphakFhSr",
+            "VZPDbGeUMtFH", "plTRFQbUYwmn", "PdMQyblkneNa", "FleYkTqwhyQA"
+        ];
+
+        function generateOrRetrieveKey() {
+            const storedKey = localStorage.getItem('generatedKey');
+            
+            if (storedKey) {
+                document.getElementById('output').textContent = storedKey;
+            } else {
+                const randomIndex = Math.floor(Math.random() * strings.length);
+                const randomString = strings[randomIndex];
+                document.getElementById('output').textContent = randomString;
+
+                // Store the generated key in local storage
+                localStorage.setItem('generatedKey', randomString);
+            }
+        }
+
+        function copyToClipboard() {
+            const outputElement = document.getElementById('output');
+            const textToCopy = outputElement.textContent;
+
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            alert('Copied to clipboard: ' + textToCopy);
+        }
+
+
+        generateOrRetrieveKey();
+    </script>
+</body>
+</html>

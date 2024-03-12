@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub README File Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #1E1E1E;
+            color: #FFFFFF;
+        }
+
+        h1 {
+            color: #0366d6;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            background-color: #2E2E2E;
+            color: #FFFFFF;
+            border: 1px solid #4F4F4F;
+        }
+
+        button {
+            background-color: #0366d6;
+            color: #FFFFFF;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        #readmeResult {
+            white-space: pre-wrap;
+            background-color: #2E2E2E;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #4F4F4F;
+        }
+
+        #copyButton {
+            background-color: #2ea44f;
+            color: #FFFFFF;
+            margin-top: 10px;
+        }
+
+        #credits {
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        #credits a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>GitHub README Generator</h1>
+
+    <form id="readmeForm">
+        <label for="projectName">Project Name:</label>
+        <input type="text" id="projectName" name="projectName" required>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+
+        <label for="installation">Installation:</label>
+        <textarea id="installation" name="installation" rows="4" required></textarea>
+
+        <label for="Features">Features:</label>
+        <textarea id="Features" name="Features" rows="4" required></textarea>
+
+        <label for="Credits">Credits:</label>
+        <textarea id="Credits" name="Credits" rows="4" required></textarea>
+
+        <button type="button" onclick="generateReadme()">Generate README</button>
+    </form>
+
+    <div id="result" style="display: none;">
+        <h2>Generated README:</h2>
+        <pre id="readmeResult"></pre>
+        <button id="copyButton" onclick="copyToClipboard()">Copy to Clipboard</button>
+    </div>
+
+    <div id="credits">
+        <h2>Credits:</h2>
+        <p>This GitHub README Generator is created by qtkn.</p>
+        <p>Find the source code on <a href="https://github.com/qtkn/qtkn.github.io" target="_blank">GitHub</a>.</p>
+    </div>
+
+    <script>
+        function generateReadme() {
+            const projectName = document.getElementById('projectName').value;
+            const description = document.getElementById('description').value;
+            const installation = document.getElementById('installation').value;
+            const Features = document.getElementById('Features').value;
+            const Credits = document.getElementById('Credits').value;
+
+            const readmeContent = `
+# ${projectName}
+
+${description}
+
+## Installation
+
+${installation}
+
+## Features
+
+${Features}
+
+## Credits
+
+${Credits}
+`;
+
+            document.getElementById('readmeResult').innerText = readmeContent;
+            document.getElementById('result').style.display = 'block';
+        }
+
+        function copyToClipboard() {
+            const readmeContent = document.getElementById('readmeResult');
+            const textarea = document.createElement('textarea');
+            textarea.value = readmeContent.innerText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            alert('README content copied to clipboard!');
+        }
+    </script>
+
+</body>
+</html>

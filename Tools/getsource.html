@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Source Viewer</title>
+    <style>
+        body {
+            background-color: #1E1E1E;
+            color: #FFFFFF;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #BB86FC;
+        }
+
+        label, button {
+            background-color: #121212;
+            color: #FFFFFF;
+            border: 1px solid #BB86FC;
+            padding: 5px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            background-color: #121212;
+            color: #FFFFFF;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #unsupportedMessage {
+            color: #FF5555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Website Source Viewer</h1>
+    <label for="websiteUrl">Enter website URL:</label>
+    <input type="text" id="websiteUrl" placeholder="https://example.com">
+    <button onclick="viewSource()">View Source</button>
+    <button onclick="copySource()">Copy Source</button>
+    <pre id="sourceCode"></pre>
+    <p id="unsupportedMessage"></p>
+
+    <script>
+        function viewSource() {
+            const url = document.getElementById('websiteUrl').value;
+            const sourceCode = document.getElementById('sourceCode');
+            const unsupportedMessage = document.getElementById('unsupportedMessage');
+            
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    sourceCode.innerText = html;
+                    unsupportedMessage.innerText = ''; // Clear any previous message
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    sourceCode.innerText = '';
+                    unsupportedMessage.innerText = 'Website not supported or inaccessible.';
+                });
+        }
+
+        function copySource() {
+            const sourceCode = document.getElementById('sourceCode').innerText;
+            if (sourceCode) {
+                navigator.clipboard.writeText(sourceCode);
+                alert('Source code copied to clipboard!');
+            }
+        }
+    </script>
+</body>
+</html>

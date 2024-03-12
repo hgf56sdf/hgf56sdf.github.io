@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Tools</title>
+</head>
+<body style="background-color: #121212; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+
+    <header style="background-color: #333; text-align: center; padding: 20px;">
+        <h1 style="font-size: 36px;">Online Tools</h1>
+    </header>
+
+    <main style="padding: 20px;">
+        <div class="tool" style="background-color: #222; color: #ffffff; border: 1px solid #444; margin: 10px; padding: 20px; transform: scale(1); transition: transform 0.2s;">
+            <h2>Website Source Viewer</Source></h2>
+            <p> Source Viewer: A web tool allowing users to view the source code of websites. Simply enter the URL, and the source code will be displayed. Copy functionality is available for your convenience.</p>
+            <a href="Tools/getsource.html" class="tool-button" style="background-color: #333; color: #ffffff; padding: 10px 20px; border: none; cursor: pointer; transition: transform 0.2s; display: block;">Enter</a>
+        </div>
+
+        <div class="tool" style="background-color: #222; color: #ffffff; border: 1px solid #444; margin: 10px; padding: 20px; transform: scale(1); transition: transform 0.2s;">
+            <h2>Github ReadME File Generator</h2>
+            <p>GitHub README Generator: Elevate your GitHub game with a quick and easy tool for awesome READMEs</p>
+            <a href="Tools/github.html" class="tool-button" style="background-color: #333; color: #ffffff; padding: 10px 20px; border: none; cursor: pointer; transition: transform 0.2s; display: block;">Enter</a>
+        </div>
+
+        <div class="tool" style="background-color: #222; color: #ffffff; border: 1px solid #444; margin: 10px; padding: 20px; transform: scale(1); transition: transform 0.2s;">
+            <h2>Password Generator</h2>
+            <p>Password Generator: Create and copy strong, custom-length passwords instantly.</p>
+            <a href="Tools/passwordgenerator.html" class="tool-button" style="background-color: #333; color: #ffffff; padding: 10px 20px; border: none; cursor: pointer; transition: transform 0.2s; display: block;">Enter</a>
+        </div>
+        
+        
+        <div>
+            <input type="text" id="search-input" placeholder="Search tools..." style="background-color: #333; color: #ffffff; padding: 10px 20px; border: none; margin-top: 10px; transition: transform 0.2s;">
+            <button id="search-button" style="background-color: #333; color: #ffffff; padding: 10px 20px; border: none; cursor: pointer; margin-top: 10px; transition: transform 0.2s;">
+                Search
+            </button>
+        </div>
+    </main>
+
+    <script>
+        const tools = document.querySelectorAll(".tool");
+        const searchButton = document.getElementById("search-button");
+
+        tools.forEach(tool => {
+            tool.addEventListener("mouseover", () => {
+                tool.style.transform = "scale(1.05)";
+            });
+
+            tool.addEventListener("mouseout", () => {
+                tool.style.transform = "scale(1)";
+            });
+        });
+
+        searchButton.addEventListener("mouseover", () => {
+            searchButton.style.transform = "scale(1.05)";
+        });
+
+        searchButton.addEventListener("mouseout", () => {
+            searchButton.style.transform = "scale(1)";
+        });
+
+        document.getElementById("search-button").addEventListener("click", function () {
+            performSearch();
+        });
+
+        document.getElementById("search-input").addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                performSearch();
+            }
+        });
+
+        function performSearch() {
+            const searchInput = document.getElementById("search-input").value.toLowerCase();
+
+            tools.forEach(tool => {
+                const toolName = tool.querySelector("h2").textContent.toLowerCase();
+                if (toolName.includes(searchInput)) {
+                    tool.style.display = "block";
+                    tool.style.transform = "scale(1.05)";
+                } else {
+                    tool.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

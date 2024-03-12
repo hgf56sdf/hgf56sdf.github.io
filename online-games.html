@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Games List</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .game {
+            background-color: #222;
+            color: #ffffff;
+            border: 1px solid #444;
+            margin: 10px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .game:hover {
+            transform: scale(1.05);
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .game-button {
+            background-color: #333;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .game-button:hover {
+            background-color: #555;
+        }
+
+        .search-button {
+            background-color: #333;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .search-button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Online Games List</h1>
+        <div>
+            <input type="text" id="search-input" placeholder="Search games..." onkeypress="searchOnEnter(event)">
+            <button class="search-button" onclick="performSearch()">Search</button>
+        </div>
+    </header>
+    
+    <main>
+        <div class="game">
+            <img src="Images/game1.png" alt="Game 1">
+            <h2>Flappy Ball</h2>
+            <p>The best way to keep the ball away from the obstacles is to look ahead. If you pay attention, you will be able to see the next two or three sets of pipes. Prepare yourself, time the kicks perfectly, and keep that ball between the pipes! We are proud to say that our Flappy Ball game high score of 52 is unbeatable – or is it?</p>
+            <a href="Games/game1.html" class="game-button">Play</a>
+        </div>
+        
+        <div class="game">
+            <img src="Images/game2.png" alt="Game 2">
+            <h2>Demon Killer</h2>
+            <p>Description of Game 2 goes here. Provide details about the second game.</p>
+            <a href="Games/game2.html" class="game-button">Play</a>
+        </div>
+
+        <!-- Add more game entries as needed -->
+    </main>
+
+    <script>
+        function performSearch() {
+            const searchInput = document.getElementById("search-input").value.toLowerCase();
+            const games = document.querySelectorAll(".game");
+
+            games.forEach(game => {
+                const gameTitle = game.querySelector("h2").textContent.toLowerCase();
+                if (gameTitle.includes(searchInput)) {
+                    game.style.display = "block";
+                } else {
+                    game.style.display = "none";
+                }
+            });
+        }
+
+        function searchOnEnter(event) {
+            if (event.key === "Enter") {
+                performSearch();
+            }
+        }
+    </script>
+</body>
+</html>
