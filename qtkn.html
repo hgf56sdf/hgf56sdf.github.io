@@ -52,15 +52,21 @@
         </p>
     </div>
 
-    <div class="download">
-        <h2>Download</h2>
-        <button onclick="downloadApp()">Download</button>
-    </div>
+<div class="download">
+    <h2>Download</h2>
+    <button onclick="downloadApp()">Download</button>
 </div>
 
 <script>
     function downloadApp() {
-<a href="https://qtkn.netlify.app/PX-SetupFiles/PX.msi" target="_blank">Click here to open the link</a>
+        // Get the anchor element by its ID
+        var downloadLink = document.createElement('a');
+        downloadLink.href = "https://qtkn.netlify.app/PX-SetupFiles/PX.msi"; // Set the download link
+        downloadLink.target = "_blank"; // Open the link in a new tab
+        downloadLink.download = "PX.msi"; // Optional: specify the filename to be downloaded
+        
+        // Trigger a click event to start the download
+        downloadLink.click();
     }
 </script>
 
