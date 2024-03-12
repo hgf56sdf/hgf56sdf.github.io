@@ -1,69 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <link href="styles/qtknstyle.css" rel="stylesheet" />
-      </head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>qtkn</title>
+    <title>PX Application</title>
+    <link href="styles/qtknstyle.css" rel="stylesheet" />
+    <style>
+        body {
+            background: url('images/w750lKk.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px; /* Added to create space for application details */
+        }
+        #main-container {
+            text-align: center; /* Added for centering text */
+        }
+        .description {
+            margin-bottom: 20px;
+        }
+        .download {
+            margin-top: 20px;
+        }
+        button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
 
-    <style>
-        body {
-    background: url('images/w750lKk.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: #ffffff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-    </style>
-    <div id="main-container">
-
-        
-        <img src="path/to/your/profile-picture.jpg" alt="Profile Picture">
-
-        
-        <section>
-            <h2>About Me</h2>
-            <p>
-                Welcome to my bio page!
-            </p>
-        </section>
-
-        
-        <section style="margin-top: 20px; display: flex; gap: 10px;">
-            <a href="https://www.tiktok.com/@qtkn" target="_blank">
-                <button>Tiktok</button>
-              </a>
-              
-              <a href="https://www.github.com/qtkn" target="_blank">
-                <button>Github</button>
-              </a>
-              
-              <a href="https://www.youtube.com/@qtkn" target="_blank">
-                <button>Youtube</button>
-              </a>
-              
-              <a href="https://discord.gg/4phX8TVpSg" target="_blank">
-                <button>Discord</button>
-              </a>
-              
-        </section>
-
-        
-        <section style="margin-top: 20px; text-align: center;">
-            <h2>My Skills</h2>
-            <p>C# : 50%</p>
-            <p>HTML & CSS : 100%</p>
-            <p>JavaScript : 12%</p>
-            <p>Python : 20%</p>
-        </section>
-
+<div id="main-container">
+    <img src="path/to/your/icon.png" alt="Application Icon" width="100">
+    <div class="description">
+        <h2>About This Application</h2>
+        <p>
+           PX Is an multiple tools application that help for gaming.
+        </p>
     </div>
+
+    <div class="download">
+        <h2>Download</h2>
+        <button onclick="downloadApp()">Download</button>
+    </div>
+</div>
+
+<script>
+    function downloadApp() {
+        // Add logic here to trigger the download of the application
+        alert("Downloading application...");
+    }
+</script>
 
 </body>
 </html>
