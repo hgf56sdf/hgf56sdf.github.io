@@ -6,62 +6,213 @@
     <title>My iOS Store</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        /* Add your CSS styles here */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+        /* Resetting defaults */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
         }
+
+        /* Body styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        /* Container styles */
         .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        /* Heading styles */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333333;
             text-align: center;
         }
+
+        /* Paragraph styles */
+        p {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #666666;
+        }
+
+        /* Install instructions styles */
         .install-instructions {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #999999;
+            text-align: center;
+        }
+
+        /* Share icon styles */
+        .share-icon {
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 10px;
+        }
+
+        /* Add to home screen icon styles */
+        .add-to-home-icon {
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 10px;
+        }
+
+        /* Button styles */
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: #ffffff;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Button hover effect */
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Application list styles */
+        .app-list {
+            display: none;
             margin-top: 20px;
+        }
+
+        /* Individual application styles */
+        .app {
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Application image styles */
+        .app img {
+            width: 100%;
+            height: auto;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        /* Application content styles */
+        .app-content {
+            padding: 10px;
+            background-color: #ffffff;
+        }
+
+        /* Application title styles */
+        .app-title {
             font-size: 18px;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        /* Application description styles */
+        .app-description {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 10px;
+        }
+
+        /* Enter button styles */
+        .enter-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: #ffffff;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Enter button hover effect */
+        .enter-button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="initialContent">
         <h1>Welcome to My iOS Store</h1>
         <p>This is your one-stop destination for all your iOS apps needs.</p>
         <p id="addPrompt">Please add this app to your home screen to use it.</p>
         <p id="installed" style="display: none;">Thank you for adding the app to your home screen!</p>
         <div class="install-instructions">
             <strong>1. Tap on the share icon at the bottom of the screen.</strong><br>
-            <img src="share_icon.png" alt="Share Icon" width="100"><br>
+            <img src="share-icon.png" alt="Share Icon" class="share-icon" width="100"><br>
             <strong>2. Select "Add to Home Screen".</strong><br>
-            <img src="add_to_home.png" alt="Add to Home Screen" width="100"><br>
+            <img src="add_to_home.png" alt="Add to Home Screen" class="add-to-home-icon" width="100"><br>
             <strong>3. Follow the prompts to add the app to your home screen.</strong>
+        </div>
+        <button id="installButton">Add to Home Screen</button>
+    </div>
+
+    <div class="container" id="successContent" style="display: none;">
+        <h1>Thank you!</h1>
+        <p>Your app has been successfully added to your home screen.</p>
+        <p>You can now access it like any other app.</p>
+        <div class="app-list">
+            <div class="app">
+                <img src="app1_icon.png" alt="App 1">
+                <div class="app-content">
+                    <div class="app-title">App 1</div>
+                    <div class="app-description">This is the description of App 1.</div>
+                    <a href="app1.html" class="enter-button">Enter</a>
+                </div>
+            </div>
+            <div class="app">
+                <img src="app2_icon.png" alt="App 2">
+                <div class="app-content">
+                    <div class="app-title">App 2</div>
+                    <div class="app-description">This is the description of App 2.</div>
+                    <a href="app2.html" class="enter-button">Enter</a>
+                </div>
+            </div>
+            <!-- Add more apps as needed -->
         </div>
     </div>
 
     <script>
         window.addEventListener('beforeinstallprompt', (event) => {
             event.preventDefault();
+            const initialContent = document.getElementById('initialContent');
+            const successContent = document.getElementById('successContent');
             const addPrompt = document.getElementById('addPrompt');
             const installed = document.getElementById('installed');
-            addPrompt.style.display = 'block';
-            installed.style.display = 'none';
+            const installButton = document.getElementById('installButton');
 
-            // Handle the install prompt event
-            const installButton = document.createElement('button');
-            installButton.textContent = 'Add to Home Screen';
+            initialContent.style.display = 'block';
+            successContent.style.display = 'none';
+
             installButton.addEventListener('click', () => {
                 event.prompt();
                 event.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        addPrompt.style.display = 'none';
-                        installed.style.display = 'block';
+                        initialContent.style.display = 'none';
+                        successContent.style.display = 'block';
                     }
                 });
             });
-            addPrompt.appendChild(installButton);
         });
     </script>
 </body>
