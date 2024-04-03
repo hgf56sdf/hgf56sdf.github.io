@@ -2,42 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YouTube Without Ads</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My iOS Store</title>
+    <link rel="manifest" href="manifest.json">
     <style>
-        /* Hide ads */
-        .ad, .ytp-ad-module, .ytp-ad-image-overlay, .ytp-ad-overlay-container, .ytp-ad-text, .ytp-ad-overlay-slot {
-            display: none !important;
-        }
-
-        /* Make the YouTube page fill the page */
-        body, html {
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-
-        #youtube-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
+        .container {
+            text-align: center;
         }
-
-        #youtube {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .install-instructions {
+            margin-top: 20px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
-    <div id="youtube-container">
-        <iframe id="youtube" src="https://www.youtube.com/" frameborder="0"></iframe>
+    <div class="container">
+        <h1>Welcome to My iOS Store</h1>
+        <p>This is your one-stop destination for all your iOS apps needs.</p>
+        <p id="addPrompt">Please add this app to your home screen to use it.</p>
+        <p id="installed" style="display: none;">Thank you for adding the app to your home screen!</p>
+        <div class="install-instructions">
+            <strong>1. Tap on the share icon at the bottom of the screen.</strong><br>
+            <img src="share_icon.png" alt="Share Icon" width="100"><br>
+            <strong>2. Select "Add to Home Screen".</strong><br>
+            <img src="add_to_home.png" alt="Add to Home Screen" width="100"><br>
+            <strong>3. Follow the prompts to add the app to your home screen.</strong>
+        </div>
     </div>
+
+    <script>
+        window.addEventListener('beforeinstallprompt', (event) => {
+            event.preventDefault();
+            const addPrompt = document.getElementById('addPrompt');
+            const installed = document.getElementById('installed');
+            addPrompt.style.display = 'block';
+            installed.style.display = 'none';
+
+            // Handle the install prompt event
+            const installButton = document.createElement('button');
+            installButton.textContent = 'Add to Home Screen';
+            installButton.addEventListener('click', () => {
+                event.prompt();
+                event.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        addPrompt.style.display = 'none';
+                        installed.style.display = 'block';
+                    }
+                });
+            });
+            addPrompt.appendChild(installButton);
+        });
+    </script>
 </body>
 </html>
