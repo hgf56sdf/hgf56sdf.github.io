@@ -19,6 +19,7 @@
             background-color: #222;
             color: #fff;
             padding: 20px;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
 
         /* Container styles */
@@ -33,6 +34,7 @@
             padding: 20px;
             animation: slideIn 0.5s ease forwards;
             display: none;
+            max-width: 90%; /* Limit the width for better readability on smaller screens */
         }
 
         @keyframes slideIn {
@@ -71,6 +73,7 @@
             display: block;
             margin: 0 auto;
             margin-bottom: 10px;
+            max-width: 80%; /* Limit the width for better readability on smaller screens */
         }
 
         /* Add to home screen icon styles */
@@ -78,6 +81,7 @@
             display: block;
             margin: 0 auto;
             margin-bottom: 10px;
+            max-width: 80%; /* Limit the width for better readability on smaller screens */
         }
 
         /* Button styles */
@@ -93,6 +97,7 @@
             text-decoration: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px; /* Add space between elements */
         }
 
         /* Button hover effect */
@@ -119,12 +124,12 @@
 
         /* Application image styles */
         .app img {
-            width: 80px;
-            height: 80px;
+            width: 60px; /* Reduce image size for better fit on smaller screens */
+            height: 60px; /* Reduce image size for better fit on smaller screens */
             border-top-left-radius: 10px;
             border-bottom-left-radius: 10px;
             object-fit: cover;
-            margin-right: 20px;
+            margin-right: 10px; /* Reduce margin for better fit on smaller screens */
         }
 
         /* Application content styles */
