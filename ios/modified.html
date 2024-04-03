@@ -16,25 +16,40 @@
         /* Body styles */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #222;
+            color: #fff;
             padding: 20px;
         }
 
         /* Container styles */
         .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             padding: 20px;
+            animation: slideIn 0.5s ease forwards;
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -100%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
         }
 
         /* Heading styles */
         h1 {
             font-size: 24px;
             margin-bottom: 20px;
-            color: #333333;
             text-align: center;
         }
 
@@ -42,14 +57,12 @@
         p {
             font-size: 16px;
             margin-bottom: 10px;
-            color: #666666;
         }
 
         /* Install instructions styles */
         .install-instructions {
             margin-bottom: 20px;
             font-size: 16px;
-            color: #999999;
             text-align: center;
         }
 
@@ -89,7 +102,6 @@
 
         /* Application list styles */
         .app-list {
-            display: none;
             margin-top: 20px;
         }
 
@@ -99,34 +111,38 @@
             margin-bottom: 20px;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
         }
 
         /* Application image styles */
         .app img {
-            width: 100%;
-            height: auto;
+            width: 80px;
+            height: 80px;
             border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+            object-fit: cover;
+            margin-right: 20px;
         }
 
         /* Application content styles */
         .app-content {
             padding: 10px;
-            background-color: #ffffff;
+            background-color: #444;
+            flex: 1;
         }
 
         /* Application title styles */
         .app-title {
             font-size: 18px;
-            color: #333333;
             margin-bottom: 5px;
         }
 
         /* Application description styles */
         .app-description {
             font-size: 14px;
-            color: #666666;
             margin-bottom: 10px;
         }
 
@@ -149,14 +165,32 @@
         .enter-button:hover {
             background-color: #0056b3;
         }
+
+        /* Close button styles */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            font-size: 20px;
+        }
+
+        /* Never show again checkbox styles */
+        .never-show-again {
+            margin-top: 10px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="container" id="initialContent">
+        <button class="close-button" id="closeButton">×</button>
         <h1>Welcome to My iOS Store</h1>
         <p>This is your one-stop destination for all your iOS apps needs.</p>
-        <p id="addPrompt">Please add this app to your home screen to use it.</p>
-        <p id="installed" style="display: none;">Thank you for adding the app to your home screen!</p>
         <div class="install-instructions">
             <strong>1. Tap on the share icon at the bottom of the screen.</strong><br>
             <img src="share-icon.png" alt="Share Icon" class="share-icon" width="100"><br>
@@ -165,18 +199,18 @@
             <strong>3. Follow the prompts to add the app to your home screen.</strong>
         </div>
         <button id="installButton">Add to Home Screen</button>
+        <label for="neverShowAgain" class="never-show-again">
+            <input type="checkbox" id="neverShowAgain"> Never show this message again
+        </label>
     </div>
 
-    <div class="container" id="successContent" style="display: none;">
-        <h1>Thank you!</h1>
-        <p>Your app has been successfully added to your home screen.</p>
-        <p>You can now access it like any other app.</p>
+    <div class="container" id="appMenu" style="display: none;">
         <div class="app-list">
             <div class="app">
-                <img src="app1_icon.png" alt="App 1">
+                <img src="flappy-bird.jpg" alt="App 1">
                 <div class="app-content">
-                    <div class="app-title">App 1</div>
-                    <div class="app-description">This is the description of App 1.</div>
+                    <div class="app-title">Modified Flappy Bird</div>
+                    <div class="app-description">Modified Flappy Bird is a fun game based on the original Flappy Bird, but with added twists and features.</div>
                     <a href="app1.html" class="enter-button">Enter</a>
                 </div>
             </div>
@@ -193,43 +227,35 @@
     </div>
 
     <script>
-        let deferredPrompt;
-
-        window.addEventListener('beforeinstallprompt', (event) => {
-            // Prevent Chrome 67 and earlier from automatically showing the prompt
-            event.preventDefault();
-            // Stash the event so it can be triggered later
-            deferredPrompt = event;
-            const installButton = document.getElementById('installButton');
-
-            // Show the install button
-            installButton.style.display = 'block';
-
-            // Handle the install button click event
-            installButton.addEventListener('click', () => {
-                // Show the install prompt
-                deferredPrompt.prompt();
-
-                // Wait for the user to respond to the prompt
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        // User accepted the prompt
-                        console.log('User accepted the install prompt');
-                    } else {
-                        // User dismissed the prompt
-                        console.log('User dismissed the install prompt');
-                    }
-
-                    // Reset the deferredPrompt variable
-                    deferredPrompt = null;
-                });
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if the popup has been closed permanently
+            if (!localStorage.getItem('showPopup')) {
+                document.querySelector('.container').style.display = 'block';
+            } else {
+                document.querySelector('#appMenu').style.display = 'block';
+            }
         });
 
-        window.addEventListener('appinstalled', (event) => {
-            // Hide the initial content and show the success content
-            document.getElementById('initialContent').style.display = 'none';
-            document.getElementById('successContent').style.display = 'block';
+        document.getElementById('installButton').addEventListener('click', function() {
+            // Hide the popup when the user clicks the install button
+            document.querySelector('.container').style.display = 'none';
+            // Show the app menu
+            document.querySelector('#appMenu').style.display = 'block';
+            // Save the preference to not show the popup again if the checkbox is checked
+            if (document.getElementById('neverShowAgain').checked) {
+                localStorage.setItem('showPopup', 'false');
+            }
+        });
+
+        document.getElementById('closeButton').addEventListener('click', function() {
+            // Hide the popup when the user clicks the close button
+            document.querySelector('.container').style.display = 'none';
+            // Show the app menu
+            document.querySelector('#appMenu').style.display = 'block';
+            // Save the preference to not show the popup again if the checkbox is checked
+            if (document.getElementById('neverShowAgain').checked) {
+                localStorage.setItem('showPopup', 'false');
+            }
         });
     </script>
 </body>
