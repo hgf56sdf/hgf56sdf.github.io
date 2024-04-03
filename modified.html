@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YouTube Without Ads</title>
+    <style>
+        /* Hide ads */
+        .ad, .ytp-ad-module, .ytp-ad-image-overlay, .ytp-ad-overlay-container, .ytp-ad-text, .ytp-ad-overlay-slot {
+            display: none !important;
+        }
+
+        /* Make the YouTube page fill the page */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #youtube-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #youtube {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="youtube-container">
+        <iframe id="youtube" src="https://www.youtube.com/" frameborder="0"></iframe>
+    </div>
+</body>
+</html>
