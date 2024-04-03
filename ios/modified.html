@@ -193,26 +193,43 @@
     </div>
 
     <script>
+        let deferredPrompt;
+
         window.addEventListener('beforeinstallprompt', (event) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
             event.preventDefault();
-            const initialContent = document.getElementById('initialContent');
-            const successContent = document.getElementById('successContent');
-            const addPrompt = document.getElementById('addPrompt');
-            const installed = document.getElementById('installed');
+            // Stash the event so it can be triggered later
+            deferredPrompt = event;
             const installButton = document.getElementById('installButton');
 
-            initialContent.style.display = 'block';
-            successContent.style.display = 'none';
+            // Show the install button
+            installButton.style.display = 'block';
 
+            // Handle the install button click event
             installButton.addEventListener('click', () => {
-                event.prompt();
-                event.userChoice.then((choiceResult) => {
+                // Show the install prompt
+                deferredPrompt.prompt();
+
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        initialContent.style.display = 'none';
-                        successContent.style.display = 'block';
+                        // User accepted the prompt
+                        console.log('User accepted the install prompt');
+                    } else {
+                        // User dismissed the prompt
+                        console.log('User dismissed the install prompt');
                     }
+
+                    // Reset the deferredPrompt variable
+                    deferredPrompt = null;
                 });
             });
+        });
+
+        window.addEventListener('appinstalled', (event) => {
+            // Hide the initial content and show the success content
+            document.getElementById('initialContent').style.display = 'none';
+            document.getElementById('successContent').style.display = 'block';
         });
     </script>
 </body>
