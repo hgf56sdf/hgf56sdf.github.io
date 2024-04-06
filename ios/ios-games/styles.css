@@ -94,9 +94,17 @@ canvas {
 
 /* Media query for mobile devices */
 @media screen and (max-width: 600px) {
+  body {
+    font-family: Arial, sans-serif; /* Changing font to Arial for better readability on mobile */
+  }
+
   .game-container {
     height: auto;
     margin-top: 20px;
     margin-bottom: 20px;
+  }
+
+  .main-menu button, .settings-menu button, .game-over button {
+    font-size: 16px; /* Decreasing font size for better fit on smaller screens */
   }
 }
