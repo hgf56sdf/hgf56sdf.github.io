@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PX Store</title>
+    <title>My iOS Store</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        /* Resetting defaults */
-        * {
+           /* Resetting defaults */
+           * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -84,10 +84,16 @@
             max-width: 80%; /* Limit the width for better readability on smaller screens */
         }
 
+        /* Button container styles */
+        .button-container {
+            display: flex;
+            justify-content: space-between; /* Distribute buttons evenly */
+            margin-bottom: 20px; /* Add space at the bottom */
+        }
+
         /* Button styles */
         button {
-            display: block;
-            width: 100%;
+            flex: 1; /* Each button takes equal space */
             padding: 10px;
             border: none;
             background-color: #007bff;
@@ -97,7 +103,8 @@
             text-decoration: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px; /* Add space between elements */
+            margin-right: 10px; /* Add space between buttons */
+            transition: background-color 0.3s ease;
         }
 
         /* Button hover effect */
@@ -117,9 +124,7 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
+            display: none;
         }
 
         /* Application image styles */
@@ -136,7 +141,6 @@
         .app-content {
             padding: 10px;
             background-color: #444;
-            flex: 1;
         }
 
         /* Application title styles */
@@ -189,29 +193,33 @@
             margin-top: 10px;
             font-size: 14px;
         }
+
+        /* Fade-in animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container" id="initialContent">
-        <button class="close-button" id="closeButton">×</button>
-        <h1>Welcome to PX iOS Store</h1>
-        <p>For Better Experience Install The PX Store And Here is the Instructions.</p>
-        <div class="install-instructions">
-            <strong>1. Tap on the share icon at the bottom of the screen.</strong><br>
-            <img src="share-icon.png" alt="Share Icon" class="share-icon" width="100"><br>
-            <strong>2. Select "Add to Home Screen".</strong><br>
-            <img src="add_to_home.png" alt="Add to Home Screen" class="add-to-home-icon" width="100"><br>
-            <strong>3. Follow the prompts to add the app to your home screen.</strong>
-        </div>
-        <button id="installButton">Add to Home Screen</button>
-        <label for="neverShowAgain" class="never-show-again">
-            <input type="checkbox" id="neverShowAgain"> Never show this message again
-        </label>
-    </div>
-
     <div class="container" id="appMenu" style="display: none;">
-        <div class="app-list">
-            <div class="app">
+        <div class="button-container">
+            <button id="featuredButton">Featured</button> <!-- Featured button -->
+            <button id="appsButton">Apps</button> <!-- Apps button -->
+            <button id="gamesButton">Games</button> <!-- Games button -->
+        </div>
+
+        <div class="app-list" id="appList">
+            <!-- Featured apps initially displayed -->
+            <div class="app" id="flappyBirdApp" style="display: none;">
                 <img src="flappy-bird.jpg" alt="App 1">
                 <div class="app-content">
                     <div class="app-title">Modified Flappy Bird</div>
@@ -219,48 +227,44 @@
                     <a href="ios-games/flappy-bird.html" class="enter-button">Enter</a>
                 </div>   
             </div>
-            <div class="app">
-                <img src="app2_icon.png" alt="App 2">
+            <div class="app" id="youtubeApp" style="display: none;">
+                <img src="youtube.png" alt="App 2">
                 <div class="app-content">
-                    <div class="app-title">App 2</div>
-                    <div class="app-description">This is the description of App 2.</div>
-                    <a href="app2.html" class="enter-button">Enter</a>
+                    <div class="app-title">Youtube</div>
+                    <div class="app-description">This Version of Youtube is without Ads!</div>
+                    <a href="ios-apps/yt.html" class="enter-button">Enter</a>
                 </div>
             </div>
-            <!-- Add more apps as needed -->
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if the popup has been closed permanently
-            if (!localStorage.getItem('showPopup')) {
-                document.querySelector('.container').style.display = 'block';
-            } else {
-                document.querySelector('#appMenu').style.display = 'block';
-            }
+            // Display featured apps initially
+            document.getElementById('appMenu').style.display = 'block';
+            document.getElementById('flappyBirdApp').style.display = 'block';
+            document.getElementById('youtubeApp').style.display = 'block';
         });
 
-        document.getElementById('installButton').addEventListener('click', function() {
-            // Hide the popup when the user clicks the install button
-            document.querySelector('.container').style.display = 'none';
-            // Show the app menu
-            document.querySelector('#appMenu').style.display = 'block';
-            // Save the preference to not show the popup again if the checkbox is checked
-            if (document.getElementById('neverShowAgain').checked) {
-                localStorage.setItem('showPopup', 'false');
-            }
+        // Feature button event listener
+        document.getElementById('featuredButton').addEventListener('click', function() {
+            // Show the featured apps
+            document.getElementById('flappyBirdApp').style.display = 'block';
+            document.getElementById('youtubeApp').style.display = 'block';
         });
 
-        document.getElementById('closeButton').addEventListener('click', function() {
-            // Hide the popup when the user clicks the close button
-            document.querySelector('.container').style.display = 'none';
-            // Show the app menu
-            document.querySelector('#appMenu').style.display = 'block';
-            // Save the preference to not show the popup again if the checkbox is checked
-            if (document.getElementById('neverShowAgain').checked) {
-                localStorage.setItem('showPopup', 'false');
-            }
+        // Apps button event listener
+        document.getElementById('appsButton').addEventListener('click', function() {
+            // Hide games and show apps
+            document.getElementById('flappyBirdApp').style.display = 'none';
+            document.getElementById('youtubeApp').style.display = 'block';
+        });
+
+        // Games button event listener
+        document.getElementById('gamesButton').addEventListener('click', function() {
+            // Hide apps and show games
+            document.getElementById('flappyBirdApp').style.display = 'block';
+            document.getElementById('youtubeApp').style.display = 'none';
         });
     </script>
 </body>
