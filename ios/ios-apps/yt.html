@@ -113,10 +113,12 @@
             <p>Enter the YouTube video URL or ID in the input field above and click "Load Video".</p>
             <p>If you don't know the ID, it's the string of characters after "v=" in the YouTube URL.</p>
             <p>For example: If your video URL is "https://www.youtube.com/watch?v=VIDEO_ID", the ID is "VIDEO_ID".</p>
+            <a href="../modified.html" class="button">Return to Home</a>
         </div>
     </main>
 
     <script>
+        // Function to load video
         function loadVideo() {
             var videoInput = document.getElementById("videoInput").value.trim();
             var videoContainer = document.getElementById("videoContainer");
@@ -150,9 +152,24 @@
             videoContainer.appendChild(iframe);
         }
 
+        // Function to toggle dark mode
         function toggleDarkMode() {
+            // Toggle dark mode class on the body
             document.body.classList.toggle("dark-mode");
+
+            // Save dark mode preference to local storage
+            var isDarkModeEnabled = document.body.classList.contains("dark-mode");
+            localStorage.setItem("darkMode", isDarkModeEnabled);
         }
+
+        // Check if dark mode preference is saved in local storage
+        window.onload = function() {
+            var isDarkModeEnabled = localStorage.getItem("darkMode");
+            if (isDarkModeEnabled === "true") {
+                // Enable dark mode if preference is saved as true
+                document.body.classList.add("dark-mode");
+            }
+        };
     </script>
 </body>
 </html>
