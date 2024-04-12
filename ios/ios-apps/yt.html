@@ -113,11 +113,13 @@
             <p>Enter the YouTube video URL or ID in the input field above and click "Load Video".</p>
             <p>If you don't know the ID, it's the string of characters after "v=" in the YouTube URL.</p>
             <p>For example: If your video URL is "https://www.youtube.com/watch?v=VIDEO_ID", the ID is "VIDEO_ID".</p>
-            <a href="../modified.html" class="button">Return to Home</a>
+            <button id="pipButton" onclick="togglePictureInPicture()" disabled>Toggle Picture-in-Picture</button>
         </div>
     </main>
 
     <script>
+        var videoPlayer; // Variable to store reference to the video player
+
         // Function to load video
         function loadVideo() {
             var videoInput = document.getElementById("videoInput").value.trim();
@@ -132,8 +134,13 @@
                 if (ampersandPosition !== -1) {
                     videoId = videoId.substring(0, ampersandPosition);
                 }
+            } else if (videoInput.includes("youtu.be")) {
+                // Extract the video ID from the shortened URL
+                videoId = videoInput.split("/").pop();
             } else {
-                videoId = videoInput;
+                // Display an error message or handle invalid input here
+                console.error("Invalid YouTube URL");
+                return;
             }
 
             // Construct the embed URL without cookies
@@ -150,6 +157,27 @@
             // Clear previous content and append the iframe
             videoContainer.innerHTML = "";
             videoContainer.appendChild(iframe);
+
+            // Store reference to the video player
+            videoPlayer = iframe;
+
+            // Enable Picture-in-Picture button
+            document.getElementById("pipButton").disabled = false;
+        }
+
+        // Function to toggle picture-in-picture mode
+        function togglePictureInPicture() {
+            if (document.pictureInPictureElement === videoPlayer) {
+                document.exitPictureInPicture()
+                    .then(() => console.log('Exited Picture-in-Picture'))
+                    .catch(error => console.error('Error exiting Picture-in-Picture:', error));
+            } else {
+                if (videoPlayer) {
+                    videoPlayer.requestPictureInPicture()
+                        .then(() => console.log('Entered Picture-in-Picture'))
+                        .catch(error => console.error('Error entering Picture-in-Picture:', error));
+                }
+            }
         }
 
         // Function to toggle dark mode
