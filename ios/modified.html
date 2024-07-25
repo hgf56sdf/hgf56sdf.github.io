@@ -235,6 +235,24 @@
                     <a href="ios-apps/yt.html" class="enter-button">Enter</a>
                 </div>
             </div>
+            <!-- New app section -->
+            <div class="app" id="whenvaction" style="display: none;">
+                <img src="whenvaction.png" alt="App 3">
+                <div class="app-content">
+                    <div class="app-title">متى اجازة؟</div>
+                    <div class="app-description">تطبيق لمعرفة وقت الاجازات الدراسية في المملكة العربية السعودية</div>
+                    <a href="ios-apps/whenisvaction.html" class="enter-button">Enter</a>
+                </div>
+            </div>
+            <div class="app" id="jawaboraskt" style="display: none;">
+                <img src="b56d42fb528ee5fd.png" alt="App 4">
+                <div class="app-content">
+                    <div class="app-title">لعبة جاوب او سكت</div>
+                    <div class="app-description">"جاوب أو اسكت" هي لعبة بين فريقين، حيث يجيب كل فريق على الأسئلة ويكسب نقاطًا للإجابات الصحيحة.
+                    </div>
+                    <a href="ios-apps/test.html" class="enter-button">Enter</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -244,6 +262,8 @@
             document.getElementById('appMenu').style.display = 'block';
             document.getElementById('flappyBirdApp').style.display = 'block';
             document.getElementById('youtubeApp').style.display = 'block';
+            document.getElementById('whenvaction').style.display = 'block';
+            document.getElementById('jawaboraskt').style.display = 'none';
         });
 
         // Feature button event listener
@@ -251,6 +271,8 @@
             // Show the featured apps
             document.getElementById('flappyBirdApp').style.display = 'block';
             document.getElementById('youtubeApp').style.display = 'block';
+            document.getElementById('whenvaction').style.display = 'block'; // Hide new app
+            document.getElementById('jawaboraskt').style.display = 'none'; // Hide new app
         });
 
         // Apps button event listener
@@ -258,13 +280,17 @@
             // Hide games and show apps
             document.getElementById('flappyBirdApp').style.display = 'none';
             document.getElementById('youtubeApp').style.display = 'block';
+            document.getElementById('whenvaction').style.display = 'block'; // Show new app
+            document.getElementById('jawaboraskt').style.display = 'none'; 
         });
 
         // Games button event listener
         document.getElementById('gamesButton').addEventListener('click', function() {
             // Hide apps and show games
             document.getElementById('flappyBirdApp').style.display = 'block';
+            document.getElementById('jawaboraskt').style.display = 'block'; 
             document.getElementById('youtubeApp').style.display = 'none';
+            document.getElementById('whenvaction').style.display = 'none'; // Hide new app
         });
     </script>
 </body>
