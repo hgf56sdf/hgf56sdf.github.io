@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shape and Measurement Detection</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        input[type="file"] {
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            background: #fff;
+            cursor: pointer;
+        }
+        canvas {
+            max-width: 100%;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        #results {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .measurement {
+            margin: 15px 0;
+            padding: 15px;
+            background: #eaf0f6;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .measurement h3 {
+            margin: 0;
+            color: #3498db;
+        }
+        .measurement p {
+            margin: 5px 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Shape and Measurement Detection</h1>
+        <input type="file" id="fileInput" accept="image/*" />
+        <br/>
+        <canvas id="imageCanvas"></canvas>
+        <br/>
+        <div id="results">
+            <h2>Results</h2>
+            <div id="shapeMeasurements">
+                <p>Upload an image to see the results.</p>
+            </div>
+        </div>
+    </div>
+    <script async src="https://docs.opencv.org/4.x/opencv.js"></script>
+    <script>
+        document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.getElementById('imageCanvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    processImage();
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function processImage() {
+            const canvas = document.getElementById('imageCanvas');
+            const src = cv.imread(canvas);
+            const gray = new cv.Mat();
+            const blurred = new cv.Mat();
+            const edges = new cv.Mat();
+            const contours = new cv.MatVector();
+            const hierarchy = new cv.Mat();
+
+            cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+            cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0);
+            cv.Canny(blurred, edges, 100, 200);
+            cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+            cv.drawContours(src, contours, -1, [255, 0, 0, 255], 2);
+            cv.imshow('imageCanvas', src);
+            displayResults(contours);
+
+            src.delete(); gray.delete(); blurred.delete(); edges.delete(); contours.delete(); hierarchy.delete();
+        }
+
+        function displayResults(contours) {
+            const shapeMeasurements = document.getElementById('shapeMeasurements');
+            shapeMeasurements.innerHTML = `<h2>Detected Shapes:</h2>`;
+
+            for (let i = 0; i < contours.size(); i++) {
+                const contour = contours.get(i);
+                const area = cv.contourArea(contour).toFixed(2);
+                const perimeter = cv.arcLength(contour, true).toFixed(2);
+                const shapeName = identifyShape(contour);
+                shapeMeasurements.innerHTML += `
+                    <div class="measurement">
+                        <h3>Shape ${i + 1}: ${shapeName}</h3>
+                        <p>Area = ${area}</p>
+                        <p>Perimeter = ${perimeter}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function identifyShape(contour) {
+            const epsilon = 0.02 * cv.arcLength(contour, true);
+            const approx = new cv.Mat();
+            cv.approxPolyDP(contour, approx, epsilon, true);
+            const numVertices = approx.rows;
+            approx.delete();
+
+            const rect = cv.boundingRect(contour);
+            const aspectRatio = rect.width / rect.height;
+
+            if (numVertices === 3) return "Triangle";
+            if (numVertices === 4) {
+                return (Math.abs(aspectRatio - 1) < 0.1) ? "Square" : "Rectangle";
+            }
+            if (numVertices > 4) return "Circle";
+            return "Unknown";
+        }
+    </script>
+</body>
+</html>
