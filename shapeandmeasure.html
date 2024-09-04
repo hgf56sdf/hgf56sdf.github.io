@@ -184,12 +184,13 @@
                 const contour = contours.get(i);
                 const area = cv.contourArea(contour).toFixed(2);
                 const perimeter = cv.arcLength(contour, true).toFixed(2);
-                const shapeName = identifyShape(contour);
+                const { shapeName, numSides } = identifyShape(contour);
                 shapeMeasurements.innerHTML += `
                     <div class="measurement">
                         <h3>Shape ${i + 1}: ${shapeName}</h3>
                         <p>Area = ${area}</p>
                         <p>Perimeter = ${perimeter}</p>
+                        <p>Number of sides = ${numSides}</p>
                     </div>
                 `;
             }
@@ -200,46 +201,45 @@
             const approx = new cv.Mat();
             cv.approxPolyDP(contour, approx, epsilon, true);
             const numVertices = approx.rows;
-            approx.delete();
 
             const rect = cv.boundingRect(contour);
             const aspectRatio = rect.width / rect.height;
 
-            if (numVertices === 3) return "Triangle";
-            if (numVertices === 4) {
-                return (Math.abs(aspectRatio - 1) < 0.1) ? "Square" : "Rectangle";
-            }
-            if (numVertices === 5) return "Pentagon";
-            if (numVertices === 6) return "Hexagon";
-            if (numVertices === 7) return "Heptagon";
-            if (numVertices === 8) return "Octagon";
-            if (numVertices === 9) return "Nonagon";
-            if (numVertices === 10) return "Decagon";
+            let shapeName = "Unknown";
 
-            const area = cv.contourArea(contour);
-            const perimeter = cv.arcLength(contour, true);
-            const circularity = (4 * Math.PI * area) / (perimeter * perimeter);
-            const circularityThreshold = 0.8;
-            if (circularity > circularityThreshold) return "Circle";
-
-            if (numVertices === 4) {
-                const angles = [];
-                for (let i = 0; i < 4; i++) {
-                    const p1 = approx.ptr(i);
-                    const p2 = approx.ptr((i + 1) % 4);
-                    const p3 = approx.ptr((i + 2) % 4);
-                    const angle = Math.abs(
-                        Math.atan2(p2[1] - p1[1], p2[0] - p1[0]) -
-                        Math.atan2(p3[1] - p2[1], p3[0] - p2[0])
-                    );
-                    angles.push(angle);
+            if (numVertices === 3) {
+                shapeName = "Triangle";
+            } else if (numVertices === 4) {
+                if (Math.abs(aspectRatio - 1) < 0.1) {
+                    shapeName = "Square";
+                } else {
+                    shapeName = "Rectangle";
                 }
-                const angleDiff = Math.max(...angles) - Math.min(...angles);
-                if (angleDiff < 0.1) return "Rhombus";
-                else return "Trapezoid";
+            } else if (numVertices === 5) {
+                shapeName = "Pentagon";
+            } else if (numVertices === 6) {
+                shapeName = "Hexagon";
+            } else if (numVertices === 7) {
+                shapeName = "Heptagon";
+            } else if (numVertices === 8) {
+                shapeName = "Octagon";
+            } else if (numVertices === 9) {
+                shapeName = "Nonagon";
+            } else if (numVertices === 10) {
+                shapeName = "Decagon";
+            } else {
+                const area = cv.contourArea(contour);
+                const perimeter = cv.arcLength(contour, true);
+                const circularity = (4 * Math.PI * area) / (perimeter * perimeter);
+                const circularityThreshold = 0.8;
+                if (circularity > circularityThreshold) {
+                    shapeName = "Circle";
+                }
             }
 
-            return "Unknown";
+            approx.delete();
+
+            return { shapeName, numSides: numVertices };
         }
 
         function applyTransformation(transformation) {
@@ -255,7 +255,7 @@
 
                 switch (transformation) {
                     case 'reflect':
-                        cv.flip(src, dst, 1); // Horizontal reflection
+                        cv.flip(src, dst, 1);
                         break;
                     case 'dilate':
                         const kernel = cv.Mat.ones(new cv.Size(5, 5), cv.CV_8U);
