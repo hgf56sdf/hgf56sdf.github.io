@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: #f0f2f5;
+            background: #e9eff1;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -16,31 +16,42 @@
             color: #333;
         }
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
             padding: 20px;
             background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
+            position: relative;
         }
         h1 {
             margin-bottom: 20px;
             color: #2c3e50;
+            font-size: 24px;
         }
         input[type="file"] {
             margin: 20px 0;
-            padding: 10px;
+            padding: 12px;
             border: 2px solid #3498db;
-            border-radius: 5px;
+            border-radius: 8px;
             background: #fff;
             cursor: pointer;
+            font-size: 16px;
+            color: #3498db;
+        }
+        input[type="file"]::file-selector-button {
+            background-color: #3498db;
+            color: white;
+            border-radius: 8px;
+            padding: 8px 16px;
         }
         canvas {
             max-width: 100%;
             border: 2px solid #3498db;
-            border-radius: 5px;
+            border-radius: 8px;
             background: #fafafa;
+            margin-top: 20px;
         }
         #results {
             margin-top: 20px;
@@ -49,16 +60,43 @@
         .measurement {
             margin: 15px 0;
             padding: 15px;
-            background: #eaf0f6;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         .measurement h3 {
             margin: 0;
             color: #3498db;
+            font-size: 18px;
         }
         .measurement p {
             margin: 5px 0;
+            color: #555;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        .controls button {
+            padding: 10px 20px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            background: #fff;
+            color: #3498db;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .controls button:hover {
+            background: #3498db;
+            color: #fff;
+        }
+        .controls button:active {
+            background: #2980b9;
+        }
+        #instructions {
+            margin-top: 20px;
+            font-size: 16px;
             color: #555;
         }
     </style>
@@ -70,6 +108,14 @@
         <br/>
         <canvas id="imageCanvas"></canvas>
         <br/>
+        <div class="controls">
+            <button onclick="applyTransformation('reflect')">Reflect</button>
+            <button onclick="applyTransformation('dilate')">Dilate</button>
+            <button onclick="applyTransformation('rotate')">Rotate</button>
+        </div>
+        <div id="instructions">
+            <p>Upload an image to detect shapes and apply transformations.</p>
+        </div>
         <div id="results">
             <h2>Results</h2>
             <div id="shapeMeasurements">
@@ -81,11 +127,15 @@
     <script>
         document.getElementById('fileInput').addEventListener('change', handleFileUpload);
 
+        let originalImgSrc = null;
+
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
+            
             const reader = new FileReader();
             reader.onload = function(e) {
+                originalImgSrc = e.target.result;
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.getElementById('imageCanvas');
@@ -95,7 +145,7 @@
                     ctx.drawImage(img, 0, 0);
                     processImage();
                 }
-                img.src = e.target.result;
+                img.src = originalImgSrc;
             }
             reader.readAsDataURL(file);
         }
@@ -108,21 +158,27 @@
             const edges = new cv.Mat();
             const contours = new cv.MatVector();
             const hierarchy = new cv.Mat();
+            const dst = new cv.Mat();
 
-            cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
-            cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0);
-            cv.Canny(blurred, edges, 100, 200);
-            cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
-            cv.drawContours(src, contours, -1, [255, 0, 0, 255], 2);
-            cv.imshow('imageCanvas', src);
-            displayResults(contours);
-
-            src.delete(); gray.delete(); blurred.delete(); edges.delete(); contours.delete(); hierarchy.delete();
+            try {
+                cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+                cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0);
+                cv.Canny(blurred, edges, 100, 200);
+                cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+                cv.drawContours(src, contours, -1, [255, 0, 0, 255], 2);
+                cv.imshow('imageCanvas', src);
+                displayResults(contours);
+            } catch (error) {
+                console.error("Error processing image:", error);
+                document.getElementById('shapeMeasurements').innerHTML = '<p>Error processing the image.</p>';
+            } finally {
+                src.delete(); gray.delete(); blurred.delete(); edges.delete(); contours.delete(); hierarchy.delete(); dst.delete();
+            }
         }
 
         function displayResults(contours) {
             const shapeMeasurements = document.getElementById('shapeMeasurements');
-            shapeMeasurements.innerHTML = `<h2>Detected Shapes:</h2>`;
+            shapeMeasurements.innerHTML = '<h2>Detected Shapes:</h2>';
 
             for (let i = 0; i < contours.size(); i++) {
                 const contour = contours.get(i);
@@ -153,8 +209,74 @@
             if (numVertices === 4) {
                 return (Math.abs(aspectRatio - 1) < 0.1) ? "Square" : "Rectangle";
             }
-            if (numVertices > 4) return "Circle";
+            if (numVertices === 5) return "Pentagon";
+            if (numVertices === 6) return "Hexagon";
+            if (numVertices === 7) return "Heptagon";
+            if (numVertices === 8) return "Octagon";
+            if (numVertices === 9) return "Nonagon";
+            if (numVertices === 10) return "Decagon";
+
+            const area = cv.contourArea(contour);
+            const perimeter = cv.arcLength(contour, true);
+            const circularity = (4 * Math.PI * area) / (perimeter * perimeter);
+            const circularityThreshold = 0.8;
+            if (circularity > circularityThreshold) return "Circle";
+
+            if (numVertices === 4) {
+                const angles = [];
+                for (let i = 0; i < 4; i++) {
+                    const p1 = approx.ptr(i);
+                    const p2 = approx.ptr((i + 1) % 4);
+                    const p3 = approx.ptr((i + 2) % 4);
+                    const angle = Math.abs(
+                        Math.atan2(p2[1] - p1[1], p2[0] - p1[0]) -
+                        Math.atan2(p3[1] - p2[1], p3[0] - p2[0])
+                    );
+                    angles.push(angle);
+                }
+                const angleDiff = Math.max(...angles) - Math.min(...angles);
+                if (angleDiff < 0.1) return "Rhombus";
+                else return "Trapezoid";
+            }
+
             return "Unknown";
+        }
+
+        function applyTransformation(transformation) {
+            if (!originalImgSrc) return;
+
+            const canvas = document.getElementById('imageCanvas');
+            const img = new Image();
+            img.onload = function() {
+                const ctx = canvas.getContext('2d');
+                const src = cv.imread(canvas);
+                const dst = new cv.Mat();
+                const size = new cv.Size(src.cols, src.rows);
+
+                switch (transformation) {
+                    case 'reflect':
+                        cv.flip(src, dst, 1); // Horizontal reflection
+                        break;
+                    case 'dilate':
+                        const kernel = cv.Mat.ones(new cv.Size(5, 5), cv.CV_8U);
+                        cv.dilate(src, dst, kernel);
+                        kernel.delete();
+                        break;
+                    case 'rotate':
+                        const center = new cv.Point(src.cols / 2, src.rows / 2);
+                        const angle = 45; // Rotate by 45 degrees
+                        const scale = 1.0;
+                        const rotationMatrix = cv.getRotationMatrix2D(center, angle, scale);
+                        cv.warpAffine(src, dst, rotationMatrix, size, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
+                        rotationMatrix.delete();
+                        break;
+                }
+
+                cv.imshow('imageCanvas', dst);
+                dst.delete();
+                src.delete();
+            }
+            img.src = originalImgSrc;
         }
     </script>
 </body>
