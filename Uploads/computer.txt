@@ -1,0 +1,39 @@
+a=int(input("enter the number "))
+if a ==0:
+   print(" the number equals zero")
+elif a >0:
+     print(" the number is positive")
+else:
+    print(" the number is negative")
+
+-------------------------------------------
+counter=2
+while counter <=20:
+      print(counter)
+      counter=counter+2
+-------------------------------------------
+counter=15
+while counter >=1
+     print(counter)
+      counter=counter-2
+--------------------------------------------
+from turtle import *
+for i in range(4):
+    forward(200)
+    right(90)
+-------------------------------------------------
+from turtle import *
+for i in range(3)
+    forward(200)
+    right(120)
+-------------------------------------------------
+def add(a , b):
+    c=a+b
+    print(c)
+a=int(input("enter the first number "))
+b=int(input("enter the second number "))
+add(a , b)
+----------------------------------------------------
+from PIL import Image
+image=Image.open('download.png')
+image.show()
