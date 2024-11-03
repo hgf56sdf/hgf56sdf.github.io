@@ -1,0 +1,114 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and Header */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+.header {
+    background-color: #333;
+    padding: 10px 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+.navbar .logo {
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+}
+.navbar .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+.navbar .nav-links li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+}
+.hero-title {
+    font-size: 3em;
+    color: #fff;
+    margin-bottom: 10px;
+}
+.hero-subtitle {
+    font-size: 1.5em;
+    color: #fff;
+    margin-bottom: 20px;
+}
+.cta-button {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    background-color: #fff;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+/* Portfolio Section */
+.portfolio {
+    padding: 50px 20px;
+    text-align: center;
+}
+.portfolio-gallery {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.portfolio-item {
+    width: calc(33.333% - 20px);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.portfolio-item:hover {
+    transform: scale(1.05);
+}
+.portfolio-item img {
+    width: 100%;
+    display: block;
+}
+.portfolio-item .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.portfolio-item:hover .overlay {
+    opacity: 1;
+}
+
+/* Footer */
+footer {
+    padding: 20px;
+    text-align: center;
+    background-color: #333;
+    color: #fff;
+}
