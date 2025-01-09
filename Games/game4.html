@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جاوب الان</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #000033;
+            color: #33ff33;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #game-container {
+            border: 4px solid #33ff33;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 800px;
+            width: 90%;
+            background-color: rgba(0, 0, 51, 0.8);
+            text-align: center;
+        }
+
+        h1, h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #33ff33;
+            color: #000033;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin: 10px;
+            font-family: 'Tajawal', sans-serif;
+            border-radius: 5px;
+            min-width: 120px;
+        }
+
+        button:hover {
+            background-color: #3333ff;
+            color: #33ff33;
+        }
+
+        input {
+            background-color: rgba(51, 255, 51, 0.1);
+            color: #33ff33;
+            border: 2px solid #33ff33;
+            padding: 10px;
+            font-size: 1em;
+            margin: 5px;
+            font-family: 'Tajawal', sans-serif;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        #team-info {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        #turn-display {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #ff3333;
+        }
+
+        #timer {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: #ff3333;
+        }
+
+        #question-image, #question-text, #fastest-item {
+            max-width: 100%;
+            height: auto;
+            margin: 20px auto;
+            border: 2px solid #33ff33;
+            border-radius: 5px;
+            display: block;
+            font-size: 2em;
+            padding: 20px;
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+
+        #answer-text {
+            font-size: 1.2em;
+            padding: 10px;
+            margin-top: 10px;
+            color: #ff3333;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .round-title {
+            font-size: 2.5em;
+            color: #ff3333;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="home-screen">
+            <h1>جاوب الان</h1>
+            <button onclick="startGame()">العب</button>
+        </div>
+        <div id="team-selection" class="hidden">
+            <h2>اختر أسماء الفرق</h2>
+            <input type="text" id="team1-name" placeholder="اسم الفريق الأول">
+            <input type="text" id="team2-name" placeholder="اسم الفريق الثاني">
+            <button onclick="startGameWithTeams()">ابدأ اللعبة</button>
+        </div>
+        <div id="game-screen" class="hidden">
+            <div id="team-info">
+                <span><span id="team1-display"></span>: <span id="team1-score">0</span></span>
+                <span><span id="team2-display"></span>: <span id="team2-score">0</span></span>
+            </div>
+            <div id="round-title" class="round-title"></div>
+            <div id="turn-display"></div>
+            <div id="timer">5</div>
+            <img id="question-image" src="/placeholder.svg" alt="صورة السؤال" class="hidden">
+            <div id="question-text" class="hidden"></div>
+            <div id="fastest-item" class="hidden"></div>
+            <div id="answer-text" class="hidden"></div>
+            <div id="game-controls" class="hidden">
+                <button onclick="showAnswer()" id="show-answer-btn" class="hidden">عرض الإجابة</button>
+                <button onclick="givePoint()" id="give-point-btn">إعطاء نقطة</button>
+                <button onclick="nextQuestion()" id="next-question-btn">السؤال التالي</button>
+            </div>
+            <div id="fastest-controls" class="hidden">
+                <button onclick="givePointToTeam(1)">نقطة للفريق 1</button>
+                <button onclick="givePointToTeam(2)">نقطة للفريق 2</button>
+                <button onclick="nextFastestItem()">التالي</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let team1Name, team2Name;
+        let currentTeam = 1;
+        let team1Points = 0;
+        let team2Points = 0;
+        let timer;
+        let currentQuestionIndex = 0;
+        let currentRound = 1;
+        let revealInterval;
+
+        const team1Images = [
+            'https://pxgamesxapps.netlify.app/Uploads/1.png',
+            'https://pxgamesxapps.netlify.app/Uploads/2.jpeg',
+            'https://pxgamesxapps.netlify.app/Uploads/3.png'
+        ];
+
+        const team2Images = [
+            'https://pxgamesxapps.netlify.app/Uploads/4.png',
+            'https://pxgamesxapps.netlify.app/Uploads/5.png',
+            'https://pxgamesxapps.netlify.app/Uploads/6.png'
+        ];
+
+        const team1TextQuestions = [
+            { question: 'ما هي عاصمة مصر؟', answer: 'القاهرة' },
+            { question: 'من هو مخترع الهاتف؟', answer: 'ألكسندر غراهام بيل' },
+            { question: 'ما هو أطول نهر في العالم؟', answer: 'نهر النيل' },
+            { question: 'ما هي أكبر دولة عربية من حيث المساحة؟', answer: 'الجزائر' },
+            { question: 'من هو مؤلف كتاب "ألف ليلة وليلة"؟', answer: 'مؤلف مجهول' }
+        ];
+
+        const team2TextQuestions = [
+            { question: 'ما هي عاصمة المملكة العربية السعودية؟', answer: 'الرياض' },
+            { question: 'من هو مخترع المصباح الكهربائي؟', answer: 'توماس إديسون' },
+            { question: 'ما هي أكبر قارة في العالم؟', answer: 'آسيا' },
+            { question: 'ما هو أعلى جبل في العالم؟', answer: 'جبل إفرست' },
+            { question: 'كم عدد كواكب المجموعة الشمسية؟', answer: '8 كواكب' }
+        ];
+
+        const fastestItems = [
+            'هاتف محمول',
+            'قارورة ماء',
+            'ملعقة',
+            'شاحن',
+            'شنطة'
+        ];
+
+        function startGame() {
+            document.getElementById('home-screen').classList.add('hidden');
+            document.getElementById('team-selection').classList.remove('hidden');
+        }
+
+        function startGameWithTeams() {
+            team1Name = document.getElementById('team1-name').value || 'الفريق الأول';
+            team2Name = document.getElementById('team2-name').value || 'الفريق الثاني';
+            document.getElementById('team1-display').textContent = team1Name;
+            document.getElementById('team2-display').textContent = team2Name;
+            document.getElementById('team-selection').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            currentRound = 1;
+            currentTeam = 1;
+            currentQuestionIndex = 0;
+            updateRoundDisplay();
+            startCountdown();
+        }
+
+        function updateRoundDisplay() {
+            const roundTitle = document.getElementById('round-title');
+            roundTitle.textContent = `الجولة ${currentRound}`;
+            if (currentRound === 3) {
+                roundTitle.textContent = 'الجولة الثالثة: الأسرع في الحصول على';
+            }
+        }
+
+        function startCountdown() {
+            let count = 3;
+            const turnDisplay = document.getElementById('turn-display');
+            turnDisplay.textContent = `اللعبة تبدأ في ${count}`;
+            const countdownInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    turnDisplay.textContent = `اللعبة تبدأ في ${count}`;
+                } else {
+                    clearInterval(countdownInterval);
+                    startTurn();
+                }
+            }, 1000);
+        }
+
+        function startTurn() {
+            const turnDisplay = document.getElementById('turn-display');
+            if (currentRound === 3) {
+                turnDisplay.textContent = 'احصل على:';
+            } else {
+                turnDisplay.textContent = currentTeam === 1 ? `دور ${team1Name}` : `دور ${team2Name}`;
+            }
+            showQuestion();
+        }
+
+        function showQuestion() {
+            clearInterval(timer);
+            clearInterval(revealInterval);
+            
+            const questionImage = document.getElementById('question-image');
+            const questionText = document.getElementById('question-text');
+            const fastestItem = document.getElementById('fastest-item');
+            const showAnswerBtn = document.getElementById('show-answer-btn');
+            const answerText = document.getElementById('answer-text');
+            const gameControls = document.getElementById('game-controls');
+            const fastestControls = document.getElementById('fastest-controls');
+            
+            // Hide all elements first
+            questionImage.classList.add('hidden');
+            questionText.classList.add('hidden');
+            fastestItem.classList.add('hidden');
+            showAnswerBtn.classList.add('hidden');
+            answerText.classList.add('hidden');
+            gameControls.classList.add('hidden');
+            fastestControls.classList.add('hidden');
+            
+            if (currentRound === 1) {
+                const images = currentTeam === 1 ? team1Images : team2Images;
+                questionImage.src = images[currentQuestionIndex];
+                questionImage.classList.remove('hidden');
+                startTimer(true);
+            } else if (currentRound === 2) {
+                const questions = currentTeam === 1 ? team1TextQuestions : team2TextQuestions;
+                questionText.textContent = questions[currentQuestionIndex].question;
+                questionText.classList.remove('hidden');
+                showAnswerBtn.classList.remove('hidden');
+                startTimer(true);
+            } else if (currentRound === 3) {
+                fastestItem.classList.remove('hidden');
+                fastestControls.classList.remove('hidden');
+                revealFastestItem();
+                startTimer(false);
+            }
+        }
+
+        function revealFastestItem() {
+            const fastestItem = document.getElementById('fastest-item');
+            const item = fastestItems[currentQuestionIndex];
+            let revealedChars = 0;
+            fastestItem.textContent = '';
+            revealInterval = setInterval(() => {
+                revealedChars++;
+                fastestItem.textContent = item.slice(0, revealedChars);
+                if (revealedChars === item.length) {
+                    clearInterval(revealInterval);
+                }
+            }, 300);
+        }
+
+        function showAnswer() {
+            const questions = currentTeam === 1 ? team1TextQuestions : team2TextQuestions;
+            const answerText = document.getElementById('answer-text');
+            answerText.textContent = `الإجابة: ${questions[currentQuestionIndex].answer}`;
+            answerText.classList.remove('hidden');
+        }
+
+        function startTimer(showControls) {
+            let timeLeft = 5;
+            const timerDisplay = document.getElementById('timer');
+            const gameControls = document.getElementById('game-controls');
+            
+            timerDisplay.textContent = timeLeft;
+            if (showControls) {
+                gameControls.classList.add('hidden');
+            }
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    if (showControls) {
+                        gameControls.classList.remove('hidden');
+                    }
+                }
+            }, 1000);
+        }
+
+        function givePoint() {
+            if (currentTeam === 1) {
+                team1Points++;
+                document.getElementById('team1-score').textContent = team1Points;
+            } else {
+                team2Points++;
+                document.getElementById('team2-score').textContent = team2Points;
+            }
+        }
+
+        function givePointToTeam(team) {
+            if (team === 1) {
+                team1Points++;
+                document.getElementById('team1-score').textContent = team1Points;
+            } else {
+                team2Points++;
+                document.getElementById('team2-score').textContent = team2Points;
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            const maxQuestions = currentRound === 1 ? 3 : 5;
+            
+            if (currentQuestionIndex < maxQuestions) {
+                showQuestion();
+            } else {
+                if (currentRound === 1) {
+                    if (currentTeam === 1) {
+                        currentTeam = 2;
+                        currentQuestionIndex = 0;
+                        startTurn();
+                    } else {
+                        currentRound = 2;
+                        currentTeam = 1;
+                        currentQuestionIndex = 0;
+                        updateRoundDisplay();
+                        startTurn();
+                    }
+                } else if (currentRound === 2) {
+                    if (currentTeam === 1) {
+                        currentTeam = 2;
+                        currentQuestionIndex = 0;
+                        startTurn();
+                    } else {
+                        currentRound = 3;
+                        currentQuestionIndex = 0;
+                        updateRoundDisplay();
+                        startTurn();
+                    }
+                }
+            }
+        }
+
+        function nextFastestItem() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < fastestItems.length) {
+                showQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            const winner = team1Points > team2Points ? team1Name : 
+                          team2Points > team1Points ? team2Name : 'تعادل';
+            document.getElementById('round-title').textContent = 'انتهت اللعبة';
+            document.getElementById('turn-display').textContent = `الفائز: ${winner}!`;
+            document.getElementById('timer').classList.add('hidden');
+            document.getElementById('question-image').classList.add('hidden');
+            document.getElementById('question-text').classList.add('hidden');
+            document.getElementById('fastest-item').classList.add('hidden');
+            document.getElementById('answer-text').classList.add('hidden');
+            document.getElementById('game-controls').classList.add('hidden');
+            document.getElementById('fastest-controls').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
+
